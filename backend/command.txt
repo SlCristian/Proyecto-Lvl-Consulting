@@ -1,0 +1,8 @@
+---Instalar prisma--
+npm install prisma@6.2.1 --save-dev 
+npm install @prisma/client@6.2.1
+npx prisma init
+npx prisma migrate dev --name esquema_completo
+
+--Validaciones--
+npm install class-validator class-transformer

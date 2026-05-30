@@ -1,0 +1,5 @@
+npm install axios zustand
+npm install zod react-hook-form @hookform/resolvers 
+npm install lucide-react clsx tailwind-merge framer-motion
+npm install js-cookie
+npm install recharts

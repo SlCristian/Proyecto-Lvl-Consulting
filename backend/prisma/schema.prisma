@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  name         String
+  roleId       Int
+  role         Role          @relation(fields: [roleId], references: [id])
+  transactions Transaction[]
+}
+
+
+model Client {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  phone        String?
+  isReferral   Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String          @id @default(uuid())
+  amount      Float
+  type        TransactionType
+  description String?
+  createdAt   DateTime        @default(now())
+  clientId    String?
+  client      Client?         @relation(fields: [clientId], references: [id])
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+
+model Category {
+  id    Int       @id @default(autoincrement())
+  name  String    @unique
+  pages WebPage[]
+}
+
+model WebPage {
+  id          String     @id @default(uuid())
+  title       String
+  description String     @db.Text
+  slug        String     @unique
+  categoryId  Int
+  category    Category   @relation(fields: [categoryId], references: [id])
+  resources   Resource[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Resource {
+  id        String  @id @default(uuid())
+  url       String
+  publicId  String
+  format    String
+  type      String
+  webPageId String
+  webPage   WebPage @relation(fields: [webPageId], references: [id])
+}
+
+
+model CustomForm {
+  id            String   @id @default(uuid())
+  name          String
+  fields        Json
+  thanksMessage String?  @default("¡Gracias por contactarnos!")
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+}
